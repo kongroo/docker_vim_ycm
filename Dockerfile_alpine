@@ -1,0 +1,25 @@
+FROM alpine
+MAINTAINER kongroo <imjcqt@gmail.com>
+WORKDIR /root
+
+RUN apk add -U --no-cache vim \
+&& apk add --no-cache --virtual .build-deps \
+    git \
+    build-base \
+    cmake \
+    python-dev \
+    python3-dev \
+    go \
+    nodejs \
+&& git clone --depth=1 https://github.com/Valloric/YouCompleteMe /root/.vim/bundle/YouCompleteMe \
+&& npm install -g typescript \
+&& cd /root/.vim/bundle/YouCompleteMe \
+&& git submodule update --init --recursive \
+&& ./install.py --clang-completer --go-completer --js-completer \
+&& rm -rf .git \
+&& rm -rf ./third_party/ycmd/clang_archives \
+&& rm -rf ./third_party/ycmd/cpp/BoostParts \
+&& rm -rf ./third_party/ycmd/third_party/OmniSharpServer \
+&& rm -rf /root/.npm \
+&& apk del .build-deps --purge 
+
